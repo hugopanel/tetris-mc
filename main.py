@@ -1,5 +1,6 @@
 import pygame as py  # import pygame library
 import os  # import os library
+import numpy as np
 
 # global value
 s_width = 300  # screen width
@@ -22,8 +23,38 @@ L = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 1, 0]]
 T = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 1, 0]]
 
 
+class Formes:
+    def __init__(self, forme):
+        self.forme = forme
+        self.x = 0
+        self.y = 0
+
+    def rotation(self):
+        self.forme = np.rot90(self.forme)
+
+    def move(self, x, y):
+        self.x += x
+        self.y += y
+
+    def draw(seft):
+        for i in range(4):
+            for j in range(4):
+                if seft.forme[i][j] == 1:
+                    py.draw.rect(
+                        win,
+                        (255, 255, 255),
+                        (
+                            (seft.x + j) * 20,
+                            (seft.y + i) * 20,
+                            20,
+                            20,
+                        ),
+                    )
+
+
 def main(window):
     run = True
+    test = Formes(S)
     while run:
         for event in py.event.get():
             if event.type == py.QUIT:
