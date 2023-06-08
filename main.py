@@ -36,25 +36,25 @@ class Formes:
         self.x += x
         self.y += y
 
-    def draw(seft):
-        for i in range(4):
-            for j in range(4):
-                if seft.forme[i][j] == 1:
-                    py.draw.rect(
-                        win,
-                        (255, 255, 255),
-                        (
-                            (seft.x + j) * 20,
-                            (seft.y + i) * 20,
-                            20,
-                            20,
-                        ),
-                    )
+    def __str__(self) -> str:
+        return (
+            "Forme : "
+            + str(self.forme)
+            + "\nPosition : "
+            + str(self.x)
+            + " "
+            + str(self.y)
+            + "\n"
+        )
+
+
+print(Formes(S))
+print(Formes(S).rotation())
+print(Formes(S).move(1, 1))
 
 
 def main(window):
     run = True
-    test = Formes(S)
     while run:
         for event in py.event.get():
             if event.type == py.QUIT:
