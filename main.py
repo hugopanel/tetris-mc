@@ -29,8 +29,9 @@ class Formes:
         self.x = 0
         self.y = 0
 
-    def rotation(self):
-        self.forme = np.rot90(self.forme)
+    def rotation(self, pas=1):
+        for i in range(pas):
+            self.forme = np.rot90(self.forme)
 
     def move(self, x, y):
         self.x += x
@@ -48,11 +49,6 @@ class Formes:
         )
 
 
-print(Formes(S))
-print(Formes(S).rotation())
-print(Formes(S).move(1, 1))
-
-
 def main(window):
     run = True
     while run:
@@ -63,5 +59,11 @@ def main(window):
 
 
 if __name__ == "__main__":
-    win = py.display.set_mode((s_width, s_height))
-    main(win)
+    """win = py.display.set_mode((s_width, s_height))
+    main(win)"""
+
+    test = Formes(S)
+
+    test.rotation()
+
+    test.move(1, 1)
