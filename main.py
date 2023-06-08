@@ -1,5 +1,10 @@
-import pygame  # import pygame library
+import pygame as py  # import pygame library
 import os  # import os library
+
+# global value
+s_width = 300  # screen width
+s_height = 200  # screen height
+
 
 # Initialisation des formes
 S = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0]]
@@ -17,4 +22,15 @@ L = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 1, 0]]
 T = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 1, 0]]
 
 
-#
+def main(window):
+    run = True
+    while run:
+        for event in py.event.get():
+            if event.type == py.QUIT:
+                print("Quit")
+                run = False
+
+
+if __name__ == "__main__":
+    win = py.display.set_mode((s_width, s_height))
+    main(win)
