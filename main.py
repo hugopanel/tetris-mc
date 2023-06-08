@@ -1,5 +1,3 @@
-import pygame as py  # import pygame library
-import os  # import os library
 import numpy as np
 
 # global value
@@ -30,8 +28,7 @@ class Formes:
         self.y = 0
 
     def rotation(self, pas=1):
-        for i in range(pas):
-            self.forme = np.rot90(self.forme)
+        self.forme = np.rot90(self.forme, pas)
 
     def move(self, x, y):
         self.x += x
@@ -49,21 +46,12 @@ class Formes:
         )
 
 
-def main(window):
-    run = True
-    while run:
-        for event in py.event.get():
-            if event.type == py.QUIT:
-                print("Quit")
-                run = False
-
-
 if __name__ == "__main__":
     """win = py.display.set_mode((s_width, s_height))
     main(win)"""
 
     test = Formes(S)
 
-    test.rotation()
+    test.rotation(3)
 
     test.move(1, 1)
