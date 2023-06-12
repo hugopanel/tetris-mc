@@ -1,4 +1,5 @@
 import numpy as np
+import pygame as py
 
 # global value
 s_width = 300  # screen width
@@ -54,11 +55,23 @@ class Formes:
 
 
 if __name__ == "__main__":
-    """win = py.display.set_mode((s_width, s_height))
-    main(win)"""
-
-    test = Formes(S)
-
-    test.rotation(3)
-
-    test.move(1, 1)
+    py.init()
+    screen = py.display.set_mode((s_width, s_height))
+    curent = Formes(S)
+    while True:
+        for event in py.event.get():
+            if event.type == py.QUIT:
+                py.quit()
+                exit()
+            if event.type == py.KEYDOWN and event.key == py.K_UP:
+                curent.move(0, 1)
+                print(curent)
+            if event.type == py.KEYDOWN and event.key == py.K_DOWN:
+                curent.move(0, -1)
+                print(curent)
+            if event.type == py.KEYDOWN and event.key == py.K_LEFT:
+                curent.rotation(1)
+            if event.type == py.KEYDOWN and event.key == py.K_RIGHT:
+                curent.rotation(-1)
+            
+        py.display.update()
