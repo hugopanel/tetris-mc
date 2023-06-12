@@ -50,6 +50,9 @@ class Formes:
 
 
 def main(window):
+    """boucle du jeu principale
+    Args:
+        window (pygame window): fenetre du jeu"""
     run = True
     while run:
         for event in py.event.get():
@@ -59,11 +62,5 @@ def main(window):
 
 
 if __name__ == "__main__":
-    """win = py.display.set_mode((s_width, s_height))
-    main(win)"""
-
-    test = Formes(S)
-
-    test.rotation()
-
-    test.move(1, 1)
+    win = py.display.set_mode((s_width, s_height))
+    main(win)
