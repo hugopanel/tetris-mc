@@ -1,5 +1,6 @@
 import numpy as np
 import pygame as py
+import os
 
 # global value
 s_width = 300  # screen width
@@ -54,13 +55,35 @@ class Formes:
         )
 
 
+def save(file, data):
+    """Sauvegarde la partie
+    :param file: nom du fichier"""
+    f = open(file, "a")
+    f.write(str(data))
+    f.close()
+
+
+def load(file):
+    """Charge la partie
+    :param file: nom du fichier"""
+    if not os.path.isfile(file):
+        return None
+    if os.stat(file).st_size == 0:
+        return None
+    f = open(file, "r")
+    data = f.read()
+    f.close()
+    return data
+
+
 if __name__ == "__main__":
     py.init()
     screen = py.display.set_mode((s_width, s_height))
-    curent = Formes(S)
+    curent = load("save.json")
     while True:
         for event in py.event.get():
             if event.type == py.QUIT:
+                save("save.json", curent)
                 py.quit()
                 exit()
             if event.type == py.KEYDOWN and event.key == py.K_UP:
@@ -73,5 +96,4 @@ if __name__ == "__main__":
                 curent.rotation(1)
             if event.type == py.KEYDOWN and event.key == py.K_RIGHT:
                 curent.rotation(-1)
-            
         py.display.update()
