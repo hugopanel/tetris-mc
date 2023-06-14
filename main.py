@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import random
 
 
 class Tileset:
@@ -26,19 +27,14 @@ class Tileset:
 
 
 # Initialisation des formes
-S = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0]]
-
-Z = [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 0, 0], [0, 1, 1, 0]]
-
-I = [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]]
-
-O = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0]]
-
-J = [[0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 1, 1, 0]]
-
-L = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 1, 0]]
-
-T = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 1, 0]]
+shapes = {"S": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0]],
+          "Z": [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 0, 0], [0, 1, 1, 0]],
+          "I": [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]],
+          "O": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0]],
+          "J": [[0, 0, 0, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 1, 1, 0]],
+          "L": [[0, 0, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 1, 0]],
+          "T": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 1, 0]]}
+colors = [color for color in range(7)]
 
 
 class Formes:
@@ -260,29 +256,26 @@ def drawInterface(screen, tileset):
                         tileset.tiles[interface[row][col]].get_rect())
 
 
-def drawShape(screen, tileset, current):
+def draw_shape_object(screen, tileset, obj):
     """
     Affiche une forme à l'écran.
 
     :param screen: L'écran sur lequel afficher la forme (le même que pour l'interface)
     :param tileset: Le tileset
-    :param current: La forme à afficher
+    :param obj: La forme à afficher
     :return:
     """
-    # Display shape
-    for y in range(len(current.forme)):
-        for x in range(len(current.forme[y])):
-            if current.forme[x][y]:
-                tile = tileset.tiles[current.color]
+    draw_shape(screen, tileset, obj.forme, obj.color, 4+obj.x, 7+obj.y)
 
-                screen.blit(tile, ((4 + current.x + x) * 8, (7 + current.y + y) * 8),
-                            tile.get_rect())
-            # DEBUG:
-            # else:
-            #     tile = tileset.tiles[2]
-            #
-            #     screen.blit(tile, ((4 + current.x + x) * 8, (7 + current.y + y) * 8),
-            #                 tile.get_rect())
+
+def draw_shape(screen, tileset, shape, color, objX, objY):
+    # Display shape
+    for y in range(len(shape)):
+        for x in range(len(shape[y])):
+            if shape[x][y]:
+                tile = tileset.tiles[color]
+
+                screen.blit(tile, ((objX + x)*8, (objY + y)*8), tile.get_rect())
 
 
 def drawGrid(screen, tileset, grid):
@@ -310,14 +303,14 @@ def main(window):
 
     pygame.init()
 
-
     tileset = Tileset(tileset_file)
     screen.blit(tileset.tiles[4], tileset.tiles[4].get_rect())
 
     window.blit(pygame.transform.scale(screen, window.get_rect().size), (0, 0))
     pygame.display.update()
 
-    current = Formes(I, 0)
+    current_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
+    next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
 
     clock = pygame.time.Clock()
     frameCounter = 0
@@ -332,19 +325,20 @@ def main(window):
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                current.tryRotate(grid, 1)
+                current_shape.tryRotate(grid, 1)
 
             # if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
             #     current.move(0, 1)
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                current.tryMove(-1, 0, grid)
+                current_shape.tryMove(-1, 0, grid)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                current.tryMove(1, 0, grid)
+                current_shape.tryMove(1, 0, grid)
 
-        drawInterface(screen, tileset)
-        drawGrid(screen, tileset, grid)
-        drawShape(screen, tileset, current)
+        drawInterface(screen, tileset)  # Affichage de l'interface
+        drawGrid(screen, tileset, grid)  # Affichage de la grille
+        draw_shape_object(screen, tileset, current_shape)  # Affichage de la forme actuelle
+        draw_shape(screen, tileset, next_shape.forme, next_shape.color, 19, 7)  # Affichage de la prochaine forme
 
         window.blit(pygame.transform.scale(screen, window.get_rect().size), (0, 0))
         pygame.display.update()
@@ -352,17 +346,18 @@ def main(window):
         clock.tick(60)
         frameCounter += 1
         if frameCounter == 10:
-            if not current.tryMove(0, 1, grid):
+            if not current_shape.tryMove(0, 1, grid):
                 # On ne peut pas bouger la forme vers le bas, on l'ajoute à la grille et on la supprime.
                 # Pour ça, on parcourt la forme pour voir où il y a des blocs
-                for y in range(len(current.forme)):
-                    for x in range(len(current.forme[y])):
-                        if current.forme[x][y]:
+                for y in range(len(current_shape.forme)):
+                    for x in range(len(current_shape.forme[y])):
+                        if current_shape.forme[x][y]:
                             # Il y a un bloc, on l'ajoute
-                            grid[current.x + x][current.y + y] = current.color
+                            grid[current_shape.x + x][current_shape.y + y] = current_shape.color
                 # On supprime la forme et on en ajoute une nouvelle
-                del current
-                current = Formes(L, 1)
+                del current_shape
+                current_shape = next_shape
+                next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
             frameCounter = 0
 
 
