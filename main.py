@@ -48,13 +48,82 @@ class Formes:
         self.y = 0
         self.color = color
 
-    def rotation(self, pas=1):
-        for i in range(pas):
-            self.forme = np.rot90(self.forme)
+    def rotate(self, pas=1):
+        """
+        Tourne la forme dans le sens horaire
+        :param pas: Nombre de rotations de 90° à effectuer
+        """
+        self.forme = np.rot90(self.forme, pas)
+
+    def tryRotate(self, grid, pas=1):
+        """
+        Essaye d'effectuer une rotation avec rotate().
+        :param grid: Grille de jeu
+        :param pas: Nombre de rotations de 90° à effectuer
+        :return: Vrai si la rotation est possible, Faux sinon.
+        """
+        newForme = np.rot90(self.forme, pas)
+        if self.checkCollisions(newForme, (self.x, self.y), grid):
+            self.forme = newForme
+            return True
+        return False
 
     def move(self, x, y):
+        """
+        Force le mouvement de la forme.
+        :param x: Décalage vers la droite
+        :param y: Décalage vers le bas
+        """
         self.x += x
         self.y += y
+
+    def tryMove(self, x, y, grid):
+        """
+        Comme move(), mais ne bouge pas à la nouvelle position si c'est impossible.
+
+        :param x: Décalage vers la droite
+        :param y: Décalage vers le bas
+        :param grid: Grille de jeu
+        :return: Vrai si le mouvement a été effectué, Faux sinon.
+        """
+        if self.canMove(x, y, grid):
+            self.move(x, y)
+            return True
+        return False
+
+    def canMove(self, tryX, tryY, grid):
+        """
+        Vérifie si la forme peut bouger à sa nouvelle position.
+
+        :param tryX: Décalage vers la droite
+        :param tryY: Décalage vers le bas
+        :param grid: Grille de jeu
+        :return: Vrai si c'est possible, Faux sinon.
+        """
+        newX = self.x + tryX
+        newY = self.y + tryY
+        return self.checkCollisions(self.forme, (newX, newY), grid)
+
+    def checkCollisions(self, shape, pos, grid):
+        """
+        Vérifie si la forme se trouve par-dessus un bloc ou en dehors des limites de la grille de jeu.
+
+        :param shape: La forme à vérifier
+        :param pos: La position de la forme dans la grille
+        :param grid: La grille de jeu
+        :return: Vrai si aucune collision n'existe, Faux sinon.
+        """
+        # On parcourt la forme
+        for y in range(len(shape)):
+            for x in range(len(shape[y])):
+                if shape[x][y]:
+                    # Limites de la grille
+                    if pos[0] + x < 0 or pos[0] + x >= 10 or pos[1] + y < 0 or pos[1] + y >= 20:
+                        return False
+                # Test de collision
+                if self.forme[x][y] and grid[pos[0] + x][pos[1] + y] != 12:
+                    return False
+        return True
 
     def __str__(self) -> str:
         """
@@ -71,6 +140,12 @@ class Formes:
 
 
 def drawInterface(screen, tileset):
+    """
+    Dessine l'interface du jeu
+    :param screen: L'écran sur lequel afficher l'interface
+    :param tileset: Le tileset
+    :return:
+    """
     interface = np.full((32, 30), 12, dtype=int)
     # interface = np.full((32, 30), 0, dtype=int)
 
@@ -178,6 +253,7 @@ def drawInterface(screen, tileset):
     # Coin bas droit
     interface[23][11] = 14
 
+    # On parcourt la grille d'interface pour afficher les tiles une par une
     for row in range(0, len(interface)):
         for col in range(0, len(interface[row])):
             screen.blit(tileset.tiles[interface[row][col]], (row * 8, col * 8),
@@ -185,6 +261,14 @@ def drawInterface(screen, tileset):
 
 
 def drawShape(screen, tileset, current):
+    """
+    Affiche une forme à l'écran.
+
+    :param screen: L'écran sur lequel afficher la forme (le même que pour l'interface)
+    :param tileset: Le tileset
+    :param current: La forme à afficher
+    :return:
+    """
     # Display shape
     for y in range(len(current.forme)):
         for x in range(len(current.forme[y])):
@@ -219,12 +303,12 @@ def main(window):
     window.blit(pygame.transform.scale(screen, window.get_rect().size), (0, 0))
     pygame.display.update()
 
-    current = Formes(L, 0)
+    current = Formes(I, 0)
 
     clock = pygame.time.Clock()
     frameCounter = 0
 
-    grid = np.zeros((10, 20))
+    grid = np.full((10, 20), 12, dtype=int)
 
     while run:
         # clock.tick(60)
@@ -234,15 +318,15 @@ def main(window):
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                current.rotation(1)
+                current.tryRotate(grid, 1)
 
             # if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
             #     current.move(0, 1)
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                current.move(-1, 0)
+                current.tryMove(-1, 0, grid)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                current.move(1, 0)
+                current.tryMove(1, 0, grid)
 
         drawInterface(screen, tileset)
         drawShape(screen, tileset, current)
@@ -253,7 +337,8 @@ def main(window):
         clock.tick(60)
         frameCounter += 1
         if frameCounter == 60:
-            current.move(0, 1)
+            res = current.tryMove(0, 1, grid)
+            print(res)
             frameCounter = 0
 
 
