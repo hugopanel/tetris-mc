@@ -143,7 +143,7 @@ def drawInterface(screen, tileset):
     :return:
     """
     interface = np.full((32, 30), 12, dtype=int)
-    # interface = np.full((32, 30), 0, dtype=int)
+    # interface = np.full((32, 30), 25, dtype=int)
 
     # Carré grille de jeu
     # Coin haut gauche
@@ -292,10 +292,27 @@ def drawGrid(screen, tileset, grid):
             screen.blit(tile, ((4 + x)*8, (7 + y)*8), tile.get_rect())
 
 
+def DeleteLineLowerBloc(grid):
+    """
+    Supprime les lignes complètes et ajoute des lignes vides en haut de la grille.
+
+    :param grid: La grille de jeu
+    :return: La nouvelle grille de jeu
+    """
+    grid = np.array(grid)
+    lines_to_delete = 1*np.all(grid != 12, axis=0)
+    lines_to_delete = np.where(lines_to_delete == 1)[0]
+    grid = np.delete(grid, lines_to_delete, axis=1)
+    for _ in lines_to_delete:
+        grid = np.hstack((np.array([12 for _ in range(10)])[:, np.newaxis], grid))
+    return grid
+
+
 def main(window):
     """boucle du jeu principale
     Args:
-        window (pygame window): fenetre du jeu"""
+        window (pygame window): fenêtre du jeu.
+    """
     run = True
     tileset_file = 'tileset.png'
 
@@ -354,6 +371,7 @@ def main(window):
                         if current_shape.forme[x][y]:
                             # Il y a un bloc, on l'ajoute
                             grid[current_shape.x + x][current_shape.y + y] = current_shape.color
+                grid = DeleteLineLowerBloc(grid)
                 # On supprime la forme et on en ajoute une nouvelle
                 del current_shape
                 current_shape = next_shape
