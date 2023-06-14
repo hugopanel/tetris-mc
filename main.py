@@ -285,6 +285,20 @@ def drawShape(screen, tileset, current):
             #                 tile.get_rect())
 
 
+def drawGrid(screen, tileset, grid):
+    """
+    Affiche la grille de jeu sur l'écran.
+
+    :param screen: La surface sur laquelle afficher la grille
+    :param tileset: Le tileset
+    :param grid: La grille de jeu
+    """
+    for y in range(20):
+        for x in range(10):
+            tile = tileset.tiles[grid[x][y]]
+            screen.blit(tile, ((4 + x)*8, (7 + y)*8), tile.get_rect())
+
+
 def main(window):
     """boucle du jeu principale
     Args:
@@ -329,6 +343,7 @@ def main(window):
                 current.tryMove(1, 0, grid)
 
         drawInterface(screen, tileset)
+        drawGrid(screen, tileset, grid)
         drawShape(screen, tileset, current)
 
         window.blit(pygame.transform.scale(screen, window.get_rect().size), (0, 0))
@@ -336,9 +351,18 @@ def main(window):
 
         clock.tick(60)
         frameCounter += 1
-        if frameCounter == 60:
-            res = current.tryMove(0, 1, grid)
-            print(res)
+        if frameCounter == 10:
+            if not current.tryMove(0, 1, grid):
+                # On ne peut pas bouger la forme vers le bas, on l'ajoute à la grille et on la supprime.
+                # Pour ça, on parcourt la forme pour voir où il y a des blocs
+                for y in range(len(current.forme)):
+                    for x in range(len(current.forme[y])):
+                        if current.forme[x][y]:
+                            # Il y a un bloc, on l'ajoute
+                            grid[current.x + x][current.y + y] = current.color
+                # On supprime la forme et on en ajoute une nouvelle
+                del current
+                current = Formes(L, 1)
             frameCounter = 0
 
 
