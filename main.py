@@ -1,5 +1,6 @@
 import numpy as np
 import pygame as py
+import json
 import os
 
 # global value
@@ -55,29 +56,45 @@ class Formes:
         )
 
 
-def save(file, data):
-    """Sauvegarde la partie
+def save(file, data)-> bool:
+    """Sauvegarde de la partie en cour dans un fichier Json
+    :param file: nom du fichier Json"""
+    try:
+        f = open(file, "a")
+        data_json = json.dumps(data.__dict__)
+        f.write(data_json)
+        f.close()
+        return True  
+    except:
+        return False
+    
+def empty(file):
+    """Vide le fichier Json
     :param file: nom du fichier"""
-    f = open(file, "a")
-    f.write(str(data))
+    f = open(file, "w")
+    f.write("")
     f.close()
-
 
 def load(file):
-    """Charge la partie
+    """renvoie les donnée contenue de le fichier Json
     :param file: nom du fichier"""
     if not os.path.isfile(file):
-        return None
+        return False
     if os.stat(file).st_size == 0:
-        return None
+        return False
     f = open(file, "r")
-    data = f.read()
+    data_json = f.read()
+    empty(file)
     f.close()
-    return data
+    return data_json
 
 
 if __name__ == "__main__":
-    py.init()
+    test = Formes(S)
+    load("save.json")
+    save("save.json", test)
+
+    """py.init()
     screen = py.display.set_mode((s_width, s_height))
     curent = load("save.json")
     while True:
@@ -96,4 +113,4 @@ if __name__ == "__main__":
                 curent.rotation(1)
             if event.type == py.KEYDOWN and event.key == py.K_RIGHT:
                 curent.rotation(-1)
-        py.display.update()
+        py.display.update()"""
