@@ -49,14 +49,10 @@ class Formes:
         self.color = color
 
     def rotation(self, pas=1):
-        """Effectue une rotation de la forme
-        :param pas: nombre de rotations de 90° à effectuer"""
-        self.forme = np.rot90(self.forme, pas)
+        for i in range(pas):
+            self.forme = np.rot90(self.forme)
 
     def move(self, x, y):
-        """Déplace la forme
-        :param x: déplacement en x
-        :param y: déplacement en y"""
         self.x += x
         self.y += y
 
@@ -197,25 +193,28 @@ def drawShape(screen, tileset, current):
 
                 screen.blit(tile, ((4 + current.x + x) * 8, (7 + current.y + y) * 8),
                             tile.get_rect())
-            else:
-                tile = tileset.tiles[2]
+            # DEBUG:
+            # else:
+            #     tile = tileset.tiles[2]
+            #
+            #     screen.blit(tile, ((4 + current.x + x) * 8, (7 + current.y + y) * 8),
+            #                 tile.get_rect())
 
-                screen.blit(tile, ((4 + current.x + x) * 8, (7 + current.y + y) * 8),
-                            tile.get_rect())
 
-
-if __name__ == "__main__":
+def main(window):
+    """boucle du jeu principale
+    Args:
+        window (pygame window): fenetre du jeu"""
+    run = True
     tileset_file = 'tileset.png'
 
     screen = pygame.Surface((256, 240))
 
     pygame.init()
-    window = pygame.display.set_mode((720, 480))
+
 
     tileset = Tileset(tileset_file)
     screen.blit(tileset.tiles[4], tileset.tiles[4].get_rect())
-
-
 
     window.blit(pygame.transform.scale(screen, window.get_rect().size), (0, 0))
     pygame.display.update()
@@ -227,7 +226,7 @@ if __name__ == "__main__":
 
     grid = np.zeros((10, 20))
 
-    while True:
+    while run:
         # clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -256,3 +255,8 @@ if __name__ == "__main__":
         if frameCounter == 60:
             current.move(0, 1)
             frameCounter = 0
+
+
+if __name__ == "__main__":
+    window = pygame.display.set_mode((720, 480))
+    main(window)
