@@ -1,0 +1,18 @@
+{
+  "Partie1": {
+    "nom": "Pierre",
+    "score": 200
+  },
+  "Partie2": {
+    "nom": "Paul",
+    "score": 100
+  },
+  "Partie3": {
+    "nom": "Jacques",
+    "score": 50
+  },
+  "Partie4": {
+    "nom": "Jean",
+    "score": 10
+  }
+}
