@@ -49,7 +49,20 @@ class Formes:
 
     def __str__(self) -> str:
         """
-        Affiche la forme et sa position"""
+        Affiche la forme et sa position en sortie de la fonction print()"""
+        return (
+            "Forme : "
+            + str(self.forme)
+            + "\nPosition : "
+            + str(self.x)
+            + " "
+            + str(self.y)
+            + "\n"
+        )
+
+    def __repr__(self) -> str:
+        """
+        Affiche la forme et sa position pour la machine"""
         return (
             "Forme : "
             + str(self.forme)
@@ -135,10 +148,12 @@ if __name__ == "__main__":
     scores = load("score.json")
 
     # Verification d'une partie en cour
-    currentGame = load("currentGame.json")
+    currentGame = load("save.json")
     if currentGame == False:
         # Generation d'une nouvelle partie
         partie = Partie()
+    else:
+        partie = Partie(currentGame)
 
     #!Partie en cour
     # Changement des données du jeu
@@ -148,12 +163,16 @@ if __name__ == "__main__":
     partie.currentForme.move(1, 1)
 
     #!le joeur a perdu
-    partie.gameOver = True
+    partie.gameOver = False
 
     if partie.gameOver:
         #!recupere les données "nom" et score et le met dans le fichier test.json
         # ajoute les donnée dans le dic scores
-        save("test.json", partie.ScoreInfo())
+        scores["Partie" + str(len(scores))] = partie.ScoreInfo()
+        print(scores)
+        empty("score.json")
+        save("score.json", scores)
     else:
         # Sauvegarde de la partie en cour
-        save("currentGame.json", partie)
+        print(partie.GameInfo())
+        save("save.json", partie.GameInfo())
