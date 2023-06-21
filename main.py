@@ -335,6 +335,10 @@ def main(window):
     score_for_line_removed = 1000           # Le score à ajouter pour chaque ligne supprimée
     multiplier_for_line_removed = 0.1       # Le multiplieur à multiplier pour chaque ligne supprimée.
 
+    max_speed = 7
+    min_speed = 40
+    current_speed = min_speed
+
     grid = np.full((10, 20), 12, dtype=int)
 
     while run:
@@ -354,6 +358,9 @@ def main(window):
                 current_shape.tryMove(-1, 0, grid)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                 current_shape.tryMove(1, 0, grid)
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                while current_shape.tryMove(0, 1, grid):
+                    pass
 
         drawInterface(screen, tileset)  # Affichage de l'interface
         drawGrid(screen, tileset, grid)  # Affichage de la grille
@@ -365,7 +372,7 @@ def main(window):
 
         clock.tick(60)
         frameCounter += 1
-        if frameCounter == 10:
+        if frameCounter >= current_speed:
             if not current_shape.tryMove(0, 1, grid):
                 # On ne peut pas bouger la forme vers le bas.
                 # On vérifie si la forme est par-dessus des blocs, auquel cas le joueur a perdu
@@ -395,6 +402,10 @@ def main(window):
                 next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
 
                 print("Score", score, "Multiplier", multiplier)
+
+                if current_speed > max_speed:
+                    current_speed -= current_speed * 0.1
+                print("Speed", current_speed)
 
             frameCounter = 0
 
