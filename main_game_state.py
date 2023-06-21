@@ -336,7 +336,12 @@ class MainGame(GameState):
                 exit()
             if not self.lock_movements:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                    self.current_shape.try_rotate(self.grid, 1)
+                    if not self.current_shape.try_rotate(self.grid, 1):
+                        if self.current_shape.x < 5:
+                            self.current_shape.try_move(1, 0, self.grid)
+                        else:
+                            self.current_shape.try_move(-1, 0, self.grid)
+                        self.current_shape.try_rotate(self.grid, 1)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
                     self.current_shape.try_move(-1, 0, self.grid)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
