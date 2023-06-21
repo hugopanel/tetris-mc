@@ -62,8 +62,10 @@ class Formes:
         """
         Affiche la forme et sa position pour la machine"""
         return {
-            "Forme": self.forme,
-            "Position": {"x": self.x, "y": self.y},
+            "x": self.x,
+            "y": self.y,
+            "color": self.color,
+            "type": self.type,
         }
 
 
@@ -71,7 +73,7 @@ def save(file, data) -> bool:
     """Sauvegarde de les donnée data dans un fichier Json
     :param file: nom du fichier Json"""
     f = open(file, "a")
-    data_json = json.dumps(data, skipkeys=True)
+    data_json = json.dumps(data)
     f.write(data_json)
     f.close()
     return True
@@ -101,7 +103,8 @@ def load(file):
 class Partie:
     def __init__(self, data: dict = None):
         if data == None:
-            self.currentShape = Formes("S")
+            self.current_shape = Formes("S")
+            self.next_shape = Formes("S")
             self.grille = np.zeros((10, 20))
             self.curent_speed = 1
             self.score = 0
@@ -133,7 +136,7 @@ class Partie:
         "renvoie les données de la partie"
         test = self.grille.tolist()
         return {
-            "currentForme": self.currentForme.type,
+            "currentForme": self.currentForme,
             "score": self.score,
             "grille": test,
             "vitesse": self.vitesse,
@@ -166,3 +169,9 @@ if __name__ == "__main__":
     else:
         # Sauvegarde de la partie en cour
         save("save.json", currentGame.GameInfo())
+
+""" 
+todo: enregistrer la couleur de la tuiles dans le save
+todo : enregistrer la futur tuiles dans le save
+todo : enregistrer la position dans le save
+"""
