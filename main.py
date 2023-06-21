@@ -305,7 +305,7 @@ def DeleteLineLowerBloc(grid):
     grid = np.delete(grid, lines_to_delete, axis=1)
     for _ in lines_to_delete:
         grid = np.hstack((np.array([12 for _ in range(10)])[:, np.newaxis], grid))
-    return grid
+    return grid, len(lines_to_delete)
 
 
 def main(window):
@@ -327,6 +327,13 @@ def main(window):
 
     clock = pygame.time.Clock()
     frameCounter = 0
+    score = 0
+    multiplier = 1
+
+    score_for_new_shape_placed = 100        # Le score à ajouter pour chaque nouvelle forme placée
+    multiplier_for_new_shape_placed = 0.01  # Le multiplieur à multiplier pour chaque nouvelle forme placée.
+    score_for_line_removed = 1000           # Le score à ajouter pour chaque ligne supprimée
+    multiplier_for_line_removed = 0.1       # Le multiplieur à multiplier pour chaque ligne supprimée.
 
     grid = np.full((10, 20), 12, dtype=int)
 
@@ -367,6 +374,9 @@ def main(window):
                     print("Game Over!")
                     return
 
+                score += score_for_new_shape_placed * multiplier
+                multiplier += multiplier * multiplier_for_new_shape_placed
+
                 # On ajoute la forme à la grille et on la supprime.
                 # Pour ça, on parcourt la forme pour voir où il y a des blocs
                 for y in range(len(current_shape.forme)):
@@ -374,11 +384,18 @@ def main(window):
                         if current_shape.forme[x][y]:
                             # Il y a un bloc, on l'ajoute
                             grid[current_shape.x + x][current_shape.y + y] = current_shape.color
-                grid = DeleteLineLowerBloc(grid)
+                grid, n_lines_removed = DeleteLineLowerBloc(grid)
+
+                score += score_for_line_removed * multiplier * n_lines_removed
+                multiplier += multiplier * multiplier_for_line_removed * n_lines_removed
+
                 # On supprime la forme et on en ajoute une nouvelle
                 del current_shape
                 current_shape = next_shape
                 next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
+
+                print("Score", score, "Multiplier", multiplier)
+
             frameCounter = 0
 
 
