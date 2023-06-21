@@ -4,10 +4,6 @@ import json
 import os
 import random as rd
 
-# global value
-s_width = 300  # screen width
-s_height = 200  # screen height
-
 
 # Initialisation des formes
 S = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0]]
@@ -24,14 +20,15 @@ L = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 1, 0]]
 
 T = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 1, 0]]
 
-formes = [S, Z, I, O, J, L, T]
+formes = {"S": S, "Z": Z, "I": I, "O": O, "J": J, "L": L, "T": T}
 
 
 class Formes:
-    def __init__(self, forme):
+    def __init__(self, TypeForme):
         """Initialise la forme
         :param forme: forme à initialiser tableau 2D"""
-        self.forme = forme
+        self.forme = formes[TypeForme]
+        self.type = TypeForme
         self.x = 0
         self.y = 0
 
@@ -40,7 +37,7 @@ class Formes:
         :param pas: nombre de rotation à effectuer"""
         self.forme = np.rot90(self.forme, pas)
 
-    def move(self, x, y):
+    def move(self, x=1, y=1):
         """Déplace la forme
         :param x: déplacement en x
         :param y: déplacement en y"""
@@ -60,31 +57,23 @@ class Formes:
             + "\n"
         )
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> dict:
         """
         Affiche la forme et sa position pour la machine"""
-        return (
-            "Forme : "
-            + str(self.forme)
-            + "\nPosition : "
-            + str(self.x)
-            + " "
-            + str(self.y)
-            + "\n"
-        )
+        return {
+            "Forme": self.forme,
+            "Position": {"x": self.x, "y": self.y},
+        }
 
 
 def save(file, data) -> bool:
-    """Sauvegarde de la partie en cour dans un fichier Json
+    """Sauvegarde de les donnée data dans un fichier Json
     :param file: nom du fichier Json"""
-    try:
-        f = open(file, "a")
-        data_json = json.dumps(data)
-        f.write(data_json)
-        f.close()
-        return True
-    except:
-        return False
+    f = open(file, "a")
+    data_json = json.dumps(data, skipkeys=True)
+    f.write(data_json)
+    f.close()
+    return True
 
 
 def empty(file):
@@ -99,9 +88,9 @@ def load(file):
     """renvoie les donnée contenue de le fichier Json
     :param file: nom du fichier"""
     if not os.path.isfile(file):
-        return False
+        return None
     if os.stat(file).st_size == 0:
-        return False
+        return None
     f = open(file, "r")
     data_json = json.loads(f.read())
     f.close()
@@ -109,12 +98,17 @@ def load(file):
 
 
 class Partie:
-    def __init__(self):
-        """Initialise la partie"""
-        self.currentForme = Formes(formes[rd.randint(0, 6)])
-        self.grille = np.zeros((10, 20))
-        self.vitesse = 1
-        self.score = 0
+    def __init__(self, data: dict = None):
+        if data == None:
+            self.currentShape = Formes("S")
+            self.grille = np.zeros((10, 20))
+            self.vitesse = 1
+            self.score = 0
+        else:
+            self.currentForme = Formes(data["currentForme"])
+            self.grille = data["grille"]
+            self.vitesse = data["vitesse"]
+            self.score = data["score"]
         self.nom = ""
         self.gameOver = False
 
@@ -136,9 +130,11 @@ class Partie:
 
     def GameInfo(self):
         "renvoie les données de la partie"
+        test = self.grille.tolist()
         return {
-            "currentForme": self.currentForme,
-            "grille": self.grille,
+            "currentForme": self.currentForme.type,
+            "score": self.score,
+            "grille": test,
             "vitesse": self.vitesse,
         }
 
@@ -147,32 +143,25 @@ if __name__ == "__main__":
     # Recuperation des scores
     scores = load("score.json")
 
-    # Verification d'une partie en cour
+    # Verification d'une partie dans le fichier save.json
     currentGame = load("save.json")
-    if currentGame == False:
+    empty("save.json")
+    if currentGame == None:
         # Generation d'une nouvelle partie
-        partie = Partie()
+        currentGame = Partie()
     else:
-        partie = Partie(currentGame)
-
-    #!Partie en cour
-    # Changement des données du jeu
-    partie.nom = "Jean"
-    partie.score = 100
-    partie.grille[0][0] = 1
-    partie.currentForme.move(1, 1)
+        # Recuperation de la partie en cour
+        currentGame = Partie(currentGame)
 
     #!le joeur a perdu
-    partie.gameOver = False
+    currentGame.gameOver = False
 
-    if partie.gameOver:
+    if currentGame.gameOver:
         #!recupere les données "nom" et score et le met dans le fichier test.json
         # ajoute les donnée dans le dic scores
-        scores["Partie" + str(len(scores))] = partie.ScoreInfo()
-        print(scores)
+        scores["Id_game" + str(len(scores))] = currentGame.ScoreInfo()
         empty("score.json")
         save("score.json", scores)
     else:
         # Sauvegarde de la partie en cour
-        print(partie.GameInfo())
-        save("save.json", partie.GameInfo())
+        save("save.json", currentGame.GameInfo())

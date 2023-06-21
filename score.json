@@ -1,7 +1,9 @@
 {
-  "Partie0": { "nom": "Pierre", "score": 200 },
-  "Partie1": { "nom": "Paul", "score": 100 },
-  "Partie2": { "nom": "Jacques", "score": 50 },
-  "Partie3": { "nom": "Jean", "score": 10 },
-  "Partie4": { "nom": "Jean", "score": 100 }
+  "Id_Game0": { "nom": "Pierre", "score": 200 },
+  "Id_Game1": { "nom": "Paul", "score": 100 },
+  "Id_Game2": { "nom": "Jacques", "score": 50 },
+  "Id_Game3": { "nom": "Jean", "score": 10 },
+  "Id_Game4": { "nom": "Jean", "score": 100 },
+  "Id_Game5": { "nom": "Jean", "score": 100 },
+  "Id_Game6": { "nom": "Jean", "score": 100 }
 }
