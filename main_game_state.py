@@ -326,24 +326,30 @@ class MainGame(GameState):
 
         self.grid = np.full((10, 20), 12, dtype=int)
 
+        self.lock_movements = False
+
     def update(self):
         # Events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                self.current_shape.try_rotate(self.grid, 1)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                self.current_shape.try_move(-1, 0, self.grid)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                self.current_shape.try_move(1, 0, self.grid)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                while self.current_shape.try_move(0, 1, self.grid):
-                    pass
+            if not self.lock_movements:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                    self.current_shape.try_rotate(self.grid, 1)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                    self.current_shape.try_move(-1, 0, self.grid)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                    self.current_shape.try_move(1, 0, self.grid)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                    while self.current_shape.try_move(0, 1, self.grid):
+                        pass
+                    self.lock_movements = True  # On bloque les mouvements latéraux.
 
         self.frame_counter += 1
         if self.frame_counter >= self.current_speed:
+            self.lock_movements = False  # On débloque les mouvements (si on a appuyé sur la flèche du bas)
+
             if not self.current_shape.try_move(0, 1, self.grid):
                 # On ne peut pas bouger la forme vers le bas.
                 # On vérifie si la forme est par-dessus des blocs, auquel cas le joueur a perdu
