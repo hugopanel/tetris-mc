@@ -321,10 +321,6 @@ def main(window):
     pygame.init()
 
     tileset = Tileset(tileset_file)
-    screen.blit(tileset.tiles[4], tileset.tiles[4].get_rect())
-
-    window.blit(pygame.transform.scale(screen, window.get_rect().size), (0, 0))
-    pygame.display.update()
 
     current_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
     next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
@@ -364,7 +360,14 @@ def main(window):
         frameCounter += 1
         if frameCounter == 10:
             if not current_shape.tryMove(0, 1, grid):
-                # On ne peut pas bouger la forme vers le bas, on l'ajoute à la grille et on la supprime.
+                # On ne peut pas bouger la forme vers le bas.
+                # On vérifie si la forme est par-dessus des blocs, auquel cas le joueur a perdu
+                if not current_shape.tryMove(0, 0, grid) and current_shape.y == 0:
+                    # Game over
+                    print("Game Over!")
+                    return
+
+                # On ajoute la forme à la grille et on la supprime.
                 # Pour ça, on parcourt la forme pour voir où il y a des blocs
                 for y in range(len(current_shape.forme)):
                     for x in range(len(current_shape.forme[y])):
