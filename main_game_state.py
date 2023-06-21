@@ -376,7 +376,7 @@ class MainGame(GameState):
                             self.grid[self.current_shape.x + x][self.current_shape.y + y] = self.current_shape.color
                 self.grid, n_lines_removed = self.delete_line_lower_bloc(self.grid)
 
-                self.score += self.score_for_line_removed * self.multiplier * n_lines_removed
+                self.score += self.score_for_line_removed * self.multiplier * n_lines_removed * 1.5
                 self.multiplier += self.multiplier * self.multiplier_for_line_removed * n_lines_removed
 
                 # On supprime la forme et on en ajoute une nouvelle
