@@ -16,13 +16,13 @@ class Tileset:
         self.tiles = []
         w, h = self.rect.size
 
-        nTilesX = int(w/self.size[0])
-        nTilesY = int(h/self.size[1])
+        n_tiles_x = int(w / self.size[0])
+        n_tiles_y = int(h / self.size[1])
 
-        for y in range(0, nTilesY):
-            for x in range(0, nTilesX):
+        for y in range(0, n_tiles_y):
+            for x in range(0, n_tiles_x):
                 tile = pygame.Surface(self.size)
-                tile.blit(self.image, (0, 0), (x*self.size[0], y*self.size[1], *self.size))
+                tile.blit(self.image, (0, 0), (x * self.size[0], y * self.size[1], *self.size))
                 self.tiles.append(tile)
 
 
@@ -51,7 +51,7 @@ class Formes:
         """
         self.forme = np.rot90(self.forme, pas)
 
-    def tryRotate(self, grid, pas=1):
+    def try_rotate(self, grid, pas=1):
         """
         Essaye d'effectuer une rotation avec rotate().
         :param grid: Grille de jeu
@@ -59,7 +59,7 @@ class Formes:
         :return: Vrai si la rotation est possible, Faux sinon.
         """
         newForme = np.rot90(self.forme, pas)
-        if self.checkCollisions(newForme, (self.x, self.y), grid):
+        if self.check_collisions(newForme, (self.x, self.y), grid):
             self.forme = newForme
             return True
         return False
@@ -73,7 +73,7 @@ class Formes:
         self.x += x
         self.y += y
 
-    def tryMove(self, x, y, grid):
+    def try_move(self, x, y, grid):
         """
         Comme move(), mais ne bouge pas à la nouvelle position si c'est impossible.
 
@@ -82,12 +82,12 @@ class Formes:
         :param grid: Grille de jeu
         :return: Vrai si le mouvement a été effectué, Faux sinon.
         """
-        if self.canMove(x, y, grid):
+        if self.can_move(x, y, grid):
             self.move(x, y)
             return True
         return False
 
-    def canMove(self, tryX, tryY, grid):
+    def can_move(self, tryX, tryY, grid):
         """
         Vérifie si la forme peut bouger à sa nouvelle position.
 
@@ -98,9 +98,9 @@ class Formes:
         """
         newX = self.x + tryX
         newY = self.y + tryY
-        return self.checkCollisions(self.forme, (newX, newY), grid)
+        return self.check_collisions(self.forme, (newX, newY), grid)
 
-    def checkCollisions(self, shape, pos, grid):
+    def check_collisions(self, shape, pos, grid):
         """
         Vérifie si la forme se trouve par-dessus un bloc ou en dehors des limites de la grille de jeu.
 
@@ -125,17 +125,17 @@ class Formes:
         """
         Affiche la forme et sa position"""
         return (
-            "Forme : "
-            + str(self.forme)
-            + "\nPosition : "
-            + str(self.x)
-            + " "
-            + str(self.y)
-            + "\n"
+                "Forme : "
+                + str(self.forme)
+                + "\nPosition : "
+                + str(self.x)
+                + " "
+                + str(self.y)
+                + "\n"
         )
 
 
-def drawInterface(screen, tileset):
+def draw_interface(screen, tileset):
     """
     Dessine l'interface du jeu
     :param screen: L'écran sur lequel afficher l'interface
@@ -143,7 +143,6 @@ def drawInterface(screen, tileset):
     :return:
     """
     interface = np.full((32, 30), 12, dtype=int)
-    # interface = np.full((32, 30), 25, dtype=int)
 
     # Carré grille de jeu
     # Coin haut gauche
@@ -265,20 +264,20 @@ def draw_shape_object(screen, tileset, obj):
     :param obj: La forme à afficher
     :return:
     """
-    draw_shape(screen, tileset, obj.forme, obj.color, 4+obj.x, 7+obj.y)
+    draw_shape(screen, tileset, obj.forme, obj.color, 4 + obj.x, 7 + obj.y)
 
 
-def draw_shape(screen, tileset, shape, color, objX, objY):
+def draw_shape(screen, tileset, shape, color, obj_x, obj_y):
     # Display shape
     for y in range(len(shape)):
         for x in range(len(shape[y])):
             if shape[x][y]:
                 tile = tileset.tiles[color]
 
-                screen.blit(tile, ((objX + x)*8, (objY + y)*8), tile.get_rect())
+                screen.blit(tile, ((obj_x + x) * 8, (obj_y + y) * 8), tile.get_rect())
 
 
-def drawGrid(screen, tileset, grid):
+def draw_grid(screen, tileset, grid):
     """
     Affiche la grille de jeu sur l'écran.
 
@@ -289,10 +288,10 @@ def drawGrid(screen, tileset, grid):
     for y in range(20):
         for x in range(10):
             tile = tileset.tiles[grid[x][y]]
-            screen.blit(tile, ((4 + x)*8, (7 + y)*8), tile.get_rect())
+            screen.blit(tile, ((4 + x) * 8, (7 + y) * 8), tile.get_rect())
 
 
-def DeleteLineLowerBloc(grid):
+def delete_line_lower_bloc(grid):
     """
     Supprime les lignes complètes et ajoute des lignes vides en haut de la grille.
 
@@ -300,7 +299,7 @@ def DeleteLineLowerBloc(grid):
     :return: La nouvelle grille de jeu
     """
     grid = np.array(grid)
-    lines_to_delete = 1*np.all(grid != 12, axis=0)
+    lines_to_delete = 1 * np.all(grid != 12, axis=0)
     lines_to_delete = np.where(lines_to_delete == 1)[0]
     grid = np.delete(grid, lines_to_delete, axis=1)
     for _ in lines_to_delete:
@@ -308,10 +307,10 @@ def DeleteLineLowerBloc(grid):
     return grid, len(lines_to_delete)
 
 
-def main(window):
+def main(win):
     """boucle du jeu principale
     Args:
-        window (pygame window): fenêtre du jeu.
+        win (pygame window): fenêtre du jeu.
     """
     run = True
     tileset_file = 'tileset.png'
@@ -326,14 +325,14 @@ def main(window):
     next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
 
     clock = pygame.time.Clock()
-    frameCounter = 0
+    frame_counter = 0
     score = 0
     multiplier = 1
 
-    score_for_new_shape_placed = 100        # Le score à ajouter pour chaque nouvelle forme placée
+    score_for_new_shape_placed = 100  # Le score à ajouter pour chaque nouvelle forme placée
     multiplier_for_new_shape_placed = 0.01  # Le multiplieur à multiplier pour chaque nouvelle forme placée.
-    score_for_line_removed = 1000           # Le score à ajouter pour chaque ligne supprimée
-    multiplier_for_line_removed = 0.1       # Le multiplieur à multiplier pour chaque ligne supprimée.
+    score_for_line_removed = 1000  # Le score à ajouter pour chaque ligne supprimée
+    multiplier_for_line_removed = 0.1  # Le multiplieur à multiplier pour chaque ligne supprimée.
 
     max_speed = 7
     min_speed = 40
@@ -342,41 +341,35 @@ def main(window):
     grid = np.full((10, 20), 12, dtype=int)
 
     while run:
-        # clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                # save("save.json", curent)
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                current_shape.tryRotate(grid, 1)
-
-            # if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-            #     current.move(0, 1)
-
+                current_shape.try_rotate(grid, 1)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                current_shape.tryMove(-1, 0, grid)
+                current_shape.try_move(-1, 0, grid)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                current_shape.tryMove(1, 0, grid)
+                current_shape.try_move(1, 0, grid)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                while current_shape.tryMove(0, 1, grid):
+                while current_shape.try_move(0, 1, grid):
                     pass
 
-        drawInterface(screen, tileset)  # Affichage de l'interface
-        drawGrid(screen, tileset, grid)  # Affichage de la grille
+        draw_interface(screen, tileset)  # Affichage de l'interface
+        draw_grid(screen, tileset, grid)  # Affichage de la grille
         draw_shape_object(screen, tileset, current_shape)  # Affichage de la forme actuelle
         draw_shape(screen, tileset, next_shape.forme, next_shape.color, 19, 7)  # Affichage de la prochaine forme
 
-        window.blit(pygame.transform.scale(screen, window.get_rect().size), (0, 0))
+        win.blit(pygame.transform.scale(screen, win.get_rect().size), (0, 0))
         pygame.display.update()
 
         clock.tick(60)
-        frameCounter += 1
-        if frameCounter >= current_speed:
-            if not current_shape.tryMove(0, 1, grid):
+        frame_counter += 1
+        if frame_counter >= current_speed:
+            if not current_shape.try_move(0, 1, grid):
                 # On ne peut pas bouger la forme vers le bas.
                 # On vérifie si la forme est par-dessus des blocs, auquel cas le joueur a perdu
-                if not current_shape.tryMove(0, 0, grid) and current_shape.y == 0:
+                if not current_shape.try_move(0, 0, grid) and current_shape.y == 0:
                     # Game over
                     print("Game Over!")
                     return
@@ -391,7 +384,7 @@ def main(window):
                         if current_shape.forme[x][y]:
                             # Il y a un bloc, on l'ajoute
                             grid[current_shape.x + x][current_shape.y + y] = current_shape.color
-                grid, n_lines_removed = DeleteLineLowerBloc(grid)
+                grid, n_lines_removed = delete_line_lower_bloc(grid)
 
                 score += score_for_line_removed * multiplier * n_lines_removed
                 multiplier += multiplier * multiplier_for_line_removed * n_lines_removed
@@ -407,7 +400,7 @@ def main(window):
                     current_speed -= current_speed * 0.1
                 print("Speed", current_speed)
 
-            frameCounter = 0
+            frame_counter = 0
 
 
 if __name__ == "__main__":
