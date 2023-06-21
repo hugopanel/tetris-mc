@@ -20,17 +20,18 @@ L = [[0, 0, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 1, 0]]
 
 T = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 1, 1, 1], [0, 0, 1, 0]]
 
-formes = {"S": S, "Z": Z, "I": I, "O": O, "J": J, "L": L, "T": T}
+shapes = {"S": S, "Z": Z, "I": I, "O": O, "J": J, "L": L, "T": T}
 
 
 class Formes:
-    def __init__(self, TypeForme):
+    def __init__(self, TypeForme, color):
         """Initialise la forme
         :param forme: forme à initialiser tableau 2D"""
-        self.forme = formes[TypeForme]
+        self.shape = shapes[TypeForme]
         self.type = TypeForme
         self.x = 0
         self.y = 0
+        self.color = color
 
     def rotation(self, pas=1):
         """Effectue une rotation de la forme
@@ -102,10 +103,10 @@ class Partie:
         if data == None:
             self.currentShape = Formes("S")
             self.grille = np.zeros((10, 20))
-            self.vitesse = 1
+            self.curent_speed = 1
             self.score = 0
         else:
-            self.currentForme = Formes(data["currentForme"])
+            self.current_shape = Formes(data["currentForme"])
             self.grille = data["grille"]
             self.vitesse = data["vitesse"]
             self.score = data["score"]
@@ -126,7 +127,7 @@ class Partie:
 
     def ScoreInfo(self):
         """Renvoie le score et le nom du joueur"""
-        return {"nom": self.nom, "score": self.score}
+        return {"nom": self.name, "score": self.score}
 
     def GameInfo(self):
         "renvoie les données de la partie"
