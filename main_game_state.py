@@ -3,7 +3,6 @@ import random
 import numpy as np
 import pygame
 
-
 # Initialisation des formes
 shapes = {"S": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0]],
           "Z": [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 0, 0], [0, 1, 1, 0]],
@@ -15,19 +14,22 @@ shapes = {"S": [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0]],
 colors = [color for color in range(7)]
 
 
-class Formes:
-    def __init__(self, forme, color):
-        self.forme = forme
-        self.x = 0
-        self.y = 0
+class Tetromino:
+    def __init__(self, name: str, color: int, rotation: int = 0, x: int = 0, y: int = 0):
+        self.name = name
         self.color = color
+        self.rotation = rotation  # TODO: Tourner la forme dès maintenant ?
+        self.x = x
+        self.y = y
+
+        self.shape_grid = shapes[name]
 
     def rotate(self, pas=1):
         """
         Tourne la forme dans le sens horaire
         :param pas: Nombre de rotations de 90° à effectuer
         """
-        self.forme = np.rot90(self.forme, pas)
+        self.shape_grid = np.rot90(self.shape_grid, pas)
 
     def try_rotate(self, grid, pas=1):
         """
@@ -36,9 +38,9 @@ class Formes:
         :param pas: Nombre de rotations de 90° à effectuer
         :return: Vrai si la rotation est possible, Faux sinon.
         """
-        new_forme = np.rot90(self.forme, pas)
+        new_forme = np.rot90(self.shape_grid, pas)
         if self.check_collisions(new_forme, (self.x, self.y), grid):
-            self.forme = new_forme
+            self.shape_grid = new_forme
             return True
         return False
 
@@ -76,7 +78,7 @@ class Formes:
         """
         newX = self.x + tryX
         newY = self.y + tryY
-        return self.check_collisions(self.forme, (newX, newY), grid)
+        return self.check_collisions(self.shape_grid, (newX, newY), grid)
 
     def check_collisions(self, shape, pos, grid):
         """
@@ -95,22 +97,21 @@ class Formes:
                     if pos[0] + x < 0 or pos[0] + x >= 10 or pos[1] + y < 0 or pos[1] + y >= 20:
                         return False
                 # Test de collision
-                if shape[x][y] and grid[pos[0] + x][pos[1] + y] != 12:
+                if self.shape_grid[x][y] and grid[pos[0] + x][pos[1] + y] != 12:
                     return False
         return True
 
     def __str__(self) -> str:
-        """
-        Affiche la forme et sa position"""
-        return (
-                "Forme : "
-                + str(self.forme)
-                + "\nPosition : "
-                + str(self.x)
-                + " "
-                + str(self.y)
-                + "\n"
-        )
+        return str(self.__dict__())
+
+    def __dict__(self) -> dict:
+        return {
+            'name': self.name,
+            'color': self.color,
+            'x': self.x,
+            'y': self.y,
+            'rotation': self.rotation
+        }
 
 
 class State:
@@ -276,7 +277,7 @@ class GameState(State):
                     self.screen.blit(tile, ((obj_x + x) * 8, (obj_y + y) * 8), tile.get_rect())
 
     def draw_shape_object(self, shape_object):
-        self.draw_shape(shape_object.forme, shape_object.color, 4 + shape_object.x, 7 + shape_object.y)
+        self.draw_shape(shape_object.shape_grid, shape_object.color, 4 + shape_object.x, 7 + shape_object.y)
 
     def delete_line_lower_bloc(self, grid):
         grid = np.array(grid)
@@ -308,8 +309,8 @@ class MainMenu(State):
 class MainGame(GameState):
     def __init__(self, game):
         super().__init__(game)
-        self.current_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
-        self.next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
+        self.current_shape = Tetromino(random.choice(list(shapes.items()))[0], random.choice(colors))
+        self.next_shape = Tetromino(random.choice(list(shapes.items()))[0], random.choice(colors))
 
         self.frame_counter = 0
         self.score = 0
@@ -369,9 +370,9 @@ class MainGame(GameState):
 
                 # On ajoute la forme à la grille et on la supprime.
                 # Pour ça, on parcourt la forme pour voir où il y a des blocs
-                for y in range(len(self.current_shape.forme)):
-                    for x in range(len(self.current_shape.forme[y])):
-                        if self.current_shape.forme[x][y]:
+                for y in range(len(self.current_shape.shape_grid)):
+                    for x in range(len(self.current_shape.shape_grid[y])):
+                        if self.current_shape.shape_grid[x][y]:
                             # Il y a un bloc, on l'ajoute
                             self.grid[self.current_shape.x + x][self.current_shape.y + y] = self.current_shape.color
                 self.grid, n_lines_removed = self.delete_line_lower_bloc(self.grid)
@@ -382,7 +383,7 @@ class MainGame(GameState):
                 # On supprime la forme et on en ajoute une nouvelle
                 del self.current_shape
                 self.current_shape = self.next_shape
-                self.next_shape = Formes(random.choice(list(shapes.values())), random.choice(colors))
+                self.next_shape = Tetromino(random.choice(list(shapes.items()))[0], random.choice(colors))
 
                 print("Score", self.score, "Multiplier", self.multiplier)
 
@@ -396,4 +397,4 @@ class MainGame(GameState):
         self.draw_interface()  # Affichage de l'interface
         self.draw_grid(self.grid)  # Affichage de la grille
         self.draw_shape_object(self.current_shape)  # Affichage de la forme actuelle
-        self.draw_shape(self.next_shape.forme, self.next_shape.color, 19, 7)  # Affichage de la prochaine forme
+        self.draw_shape(self.next_shape.shape_grid, self.next_shape.color, 19, 7)  # Affichage de la prochaine forme
