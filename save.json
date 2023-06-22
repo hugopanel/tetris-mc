@@ -1,14 +1,14 @@
 {
     "score": 0,
     "current_tetrimino": {
-        "name": "S",
+        "name": "J",
         "rotation": 0,
-        "color": 0,
+        "color": 7,
         "x": 0,
         "y": 0
     },
     "next_tetrimino": {
-        "name": "L",
+        "name": "J",
         "rotation": 0,
         "color": 0,
         "x": 0,
