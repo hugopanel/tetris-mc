@@ -95,7 +95,7 @@ class Formes:
                     if pos[0] + x < 0 or pos[0] + x >= 10 or pos[1] + y < 0 or pos[1] + y >= 20:
                         return False
                 # Test de collision
-                if self.forme[x][y] and grid[pos[0] + x][pos[1] + y] != 12:
+                if shape[x][y] and grid[pos[0] + x][pos[1] + y] != 12:
                     return False
         return True
 
@@ -387,7 +387,7 @@ class MainGame(GameState):
                 print("Score", self.score, "Multiplier", self.multiplier)
 
                 if self.current_speed > self.max_speed:
-                    self.current_speed -= self.current_speed * 0.1
+                    self.current_speed -= self.current_speed * 0.01
                 print("Speed", self.current_speed)
 
             self.frame_counter = 0
@@ -397,4 +397,3 @@ class MainGame(GameState):
         self.draw_grid(self.grid)  # Affichage de la grille
         self.draw_shape_object(self.current_shape)  # Affichage de la forme actuelle
         self.draw_shape(self.next_shape.forme, self.next_shape.color, 19, 7)  # Affichage de la prochaine forme
-
