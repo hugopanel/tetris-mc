@@ -1,14 +1,10 @@
-import pygame
-import numpy as np
-import random
-from enum import Enum
 import pygame.freetype
 
-from Tileset import Tileset
-from main_game_state import MainMenu
+from Tetris.Tileset import Tileset
+from Tetris.StateMenuMain import MainMenu
+
 
 states_stack = []
-
 
 if __name__ == "__main__":
     window = pygame.display.set_mode((720, 480))
