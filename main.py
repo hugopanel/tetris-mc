@@ -1,7 +1,7 @@
 import pygame.freetype
 
 from Tetris.Tileset import Tileset
-from Tetris.StateMenuMain import MainMenu
+from Tetris.StateMenuMain import StateMenuMain
 
 
 states_stack = []
@@ -28,7 +28,7 @@ if __name__ == "__main__":
         'clock': clock,
         'font': game_font}
 
-    states_stack.append(MainMenu(game))
+    states_stack.append(StateMenuMain(game))
 
     while True:
         clock.tick(60)

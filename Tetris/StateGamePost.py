@@ -1,10 +1,12 @@
-from Tetris.State import *
+from Tetris.State import State
 
 import os
 import json
+import pygame
+import numpy as np
 
 
-class PostGame(State):
+class StateGamePost(State):
     def __init__(self, game, score, gamemode='classic'):
         super().__init__(game)
         self.score = score
