@@ -5,9 +5,10 @@ import json
 
 
 class PostGame(State):
-    def __init__(self, game, score):
+    def __init__(self, game, score, gamemode='classic'):
         super().__init__(game)
         self.score = score
+        self.gamemode = gamemode
 
         self.text_input = ""
 
@@ -28,7 +29,7 @@ class PostGame(State):
                         scores = json.loads(f.read())
                     f.close()
 
-                    scores.append({'nom': self.text_input, 'score': self.score})
+                    scores.append({'nom': self.text_input, 'score': self.score, 'gamemode': self.gamemode})
 
                     f = open("scores.json", "w")
                     f.write(json.dumps(scores, indent=4))

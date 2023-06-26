@@ -1,3 +1,5 @@
+import pygame.event
+
 from Tetris.State import *
 from Tetris.Tetromino import *
 from Tetris.StateMenuPause import PauseMenu
@@ -6,7 +8,7 @@ from Tetris.StatePostGame import PostGame
 import random
 
 
-class MainGame(GameState):
+class TimeTrial(GameState):
     def __init__(self, game, score: int = 0, multiplier: int = 1, grid: np.array = None, current_speed: int = None,
                  current_tetromino: dict = None, next_tetromino: dict = None, frame_counter: int = 0):
         super().__init__(game)
@@ -40,6 +42,12 @@ class MainGame(GameState):
 
         self.lock_movements = False
 
+        self.seconds_passed = 0
+        self.event_one_second_passed = pygame.USEREVENT + 1
+        self.event_end_time_trial = pygame.USEREVENT + 2
+        pygame.time.set_timer(self.event_one_second_passed, 1000)   # 1 seconde
+        pygame.time.set_timer(self.event_end_time_trial, 60000)     # 60 secondes
+
     def update(self):
         # Events
         for event in pygame.event.get():
@@ -64,6 +72,13 @@ class MainGame(GameState):
                     self.lock_movements = True  # On bloque les mouvements latéraux.
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     self.states_stack.append(PauseMenu(self.game))
+            if event.type == self.event_one_second_passed:
+                self.seconds_passed += 1
+                print(60 - self.seconds_passed)
+            if event.type == self.event_end_time_trial:
+                # Fin du compteur, on termine le jeu
+                self.states_stack.append(PostGame(self.game, self.score, 'time_trial'))
+                return
 
         self.frame_counter += 1
         if self.frame_counter >= self.current_speed:
@@ -116,7 +131,7 @@ class MainGame(GameState):
 
     def __dict__(self) -> dict:
         return {
-            'gamemode': 'classic',
+            'gamemode': 'timetrials',
             'score': self.score,
             'multiplier': self.multiplier,
             'grid': self.grid.tolist(),
