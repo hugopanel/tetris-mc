@@ -3,7 +3,7 @@ from Tetris.State import *
 import json
 
 
-class PauseMenu(State):
+class StateMenuPause(State):
     def __init__(self, game):
         super().__init__(game)
         self.selection = 0

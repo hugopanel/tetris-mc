@@ -1,14 +1,14 @@
 import pygame.event
 
-from Tetris.State import *
 from Tetris.Tetromino import *
-from Tetris.StateMenuPause import PauseMenu
-from Tetris.StatePostGame import PostGame
+from Tetris.GameState import GameState
+from Tetris.StateMenuPause import StateMenuPause
+from Tetris.StateGamePost import StateGamePost
 
 import random
 
 
-class TimeTrial(GameState):
+class StateGameTimeTrial(GameState):
     def __init__(self, game, score: int = 0, multiplier: int = 1, grid: np.array = None, current_speed: int = None,
                  current_tetromino: dict = None, next_tetromino: dict = None, frame_counter: int = 0):
         super().__init__(game)
@@ -71,13 +71,13 @@ class TimeTrial(GameState):
                         pass
                     self.lock_movements = True  # On bloque les mouvements latéraux.
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.states_stack.append(PauseMenu(self.game))
+                    self.states_stack.append(StateMenuPause(self.game))
             if event.type == self.event_one_second_passed:
                 self.seconds_passed += 1
                 print(60 - self.seconds_passed)
             if event.type == self.event_end_time_trial:
                 # Fin du compteur, on termine le jeu
-                self.states_stack.append(PostGame(self.game, self.score, 'time_trial'))
+                self.states_stack.append(StateGamePost(self.game, self.score, 'time_trial'))
                 return
 
         self.frame_counter += 1
@@ -90,7 +90,7 @@ class TimeTrial(GameState):
                 if not self.current_tetromino.try_move(0, 0, self.grid) and self.current_tetromino.y == 0:
                     # Game over
                     print("Game Over!")
-                    self.states_stack.append(PostGame(self.game, self.score))
+                    self.states_stack.append(StateGamePost(self.game, self.score))
                     return
 
                 self.score += self.score_for_new_shape_placed * self.multiplier

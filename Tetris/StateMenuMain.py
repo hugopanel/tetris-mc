@@ -1,12 +1,12 @@
 from Tetris.State import *
-from Tetris.StateGameMain import MainGame
-from Tetris.StateGameTimeTrial import TimeTrial
+from Tetris.StateGameMain import StateGameMain
+from Tetris.StateGameTimeTrial import StateGameTimeTrial
 
 import os
 import json
 
 
-class MainMenu(State):
+class StateMenuMain(State):
     def __init__(self, game):
         super().__init__(game)
         self.selection = 0
@@ -23,9 +23,9 @@ class MainMenu(State):
                 self.selection -= 1
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 if self.selection == 0:
-                    self.states_stack.append(MainGame(self.game))
+                    self.states_stack.append(StateGameMain(self.game))
                 if self.selection == 1:
-                    self.states_stack.append(TimeTrial(self.game))
+                    self.states_stack.append(StateGameTimeTrial(self.game))
                 elif self.selection == 2:
                     # Chargement de la dernière partie
                     if os.path.isfile("save.json"):
@@ -34,11 +34,11 @@ class MainMenu(State):
                             data_json = json.loads(f.read())
                             f.close()
                             if data_json['gamemode'] == 'classic':
-                                class_to_load = MainGame
+                                class_to_load = StateGameMain
                             elif data_json['gamemode'] == 'timetrials':
-                                class_to_load = TimeTrial
+                                class_to_load = StateGameTimeTrial
                             else:
-                                class_to_load = MainGame
+                                class_to_load = StateGameMain
                             self.states_stack.append(class_to_load(self.game, data_json['score'],
                                                                    data_json['multiplier'], data_json['grid'],
                                                                    data_json['current_speed'],
