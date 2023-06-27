@@ -4,6 +4,10 @@
 # Jetbrains IDE
 .idea/
 
+# Local save
+save.json
+scores.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
