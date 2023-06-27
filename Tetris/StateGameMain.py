@@ -140,8 +140,6 @@ class StateGameMain(GameState):
                     for x in range(10):
                         self.particules.add((x + 4) * 8, (20 + 7 - i) * 8)
 
-                self.particules.update()
-
                 self.score += (
                     self.score_for_line_removed
                     * self.multiplier
@@ -166,6 +164,7 @@ class StateGameMain(GameState):
                 print("Speed", self.current_speed)
 
             self.frame_counter = 0
+        self.particules.update()
 
     def render(self):
         self.draw_interface()  # Affichage de l'interface
