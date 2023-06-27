@@ -11,7 +11,7 @@ class StateMenuMain(State):
     def __init__(self, game):
         super().__init__(game)
         self.selection = 0
-        self.items = ["Mode classique", "Temps contre la montre", "Défis", "Charger partie"]
+        self.items = ["Classic mode", "Time trials", "Challenges", "Load game"]
 
     def update(self):
         for event in pygame.event.get():

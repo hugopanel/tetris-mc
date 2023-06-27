@@ -86,14 +86,7 @@ class StateGameChallenges(GameState):
                     return
 
                 score_to_add = self.score_for_new_shape_placed * self.multiplier
-                print(score_to_add)
-                self.score += score_to_add
                 self.multiplier += self.multiplier * self.multiplier_for_new_shape_placed
-
-                # Challenge 0 (300 points d'un coup)
-                if self.current_challenge == 0 and score_to_add >= 300:
-                    self.current_challenge += 1
-                    self.score += self.score_challenge_completed
 
                 # On ajoute la forme à la grille et on la supprime.
                 # Pour ça, on parcourt la forme pour voir où il y a des blocs
@@ -120,8 +113,15 @@ class StateGameChallenges(GameState):
                     self.current_challenge += 1
                     self.score += self.score_challenge_completed
 
-                self.score += self.score_for_line_removed * self.multiplier * n_lines_removed * 1.5
+                score_to_add += self.score_for_line_removed * self.multiplier * n_lines_removed * 1.5
+                self.score += score_to_add
                 self.multiplier += self.multiplier * self.multiplier_for_line_removed * n_lines_removed
+
+                print(score_to_add)
+                # Challenge 0 (300 points d'un coup)
+                if self.current_challenge == 0 and score_to_add >= 300:
+                    self.current_challenge += 1
+                    self.score += self.score_challenge_completed
 
                 # On supprime la forme et on en ajoute une nouvelle
                 del self.current_tetromino
@@ -148,6 +148,10 @@ class StateGameChallenges(GameState):
 
         # Affichage du défi actuel
         self.screen.blit(self.font.render("Défi : " + self.challenges[self.current_challenge], (255, 255, 255))[0], (10, 10))
+
+    def draw_interface(self, **interface):
+        super().draw_interface(**interface)
+        self.screen.blit(self.font.render("Score : " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
 
     def __dict__(self) -> dict:
         return {
