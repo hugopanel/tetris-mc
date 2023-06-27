@@ -80,6 +80,10 @@ class StateGameTimeTrial(GameState):
                 self.states_stack.append(StateGamePost(self.game, self.score, 'time_trial'))
                 return
 
+            if (60-self.seconds_passed)<=0:
+                self.states_stack.append(StateGamePost(self.game, self.score, 'time_trial'))
+                return
+
         self.frame_counter += 1
         if self.frame_counter >= self.current_speed:
             self.lock_movements = False  # On débloque les mouvements (si on a appuyé sur la flèche du bas)
@@ -92,6 +96,7 @@ class StateGameTimeTrial(GameState):
                     print("Game Over!")
                     self.states_stack.append(StateGamePost(self.game, self.score))
                     return
+                
 
                 self.score += self.score_for_new_shape_placed * self.multiplier
                 self.multiplier += self.multiplier * self.multiplier_for_new_shape_placed
