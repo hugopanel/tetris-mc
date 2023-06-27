@@ -137,7 +137,7 @@ class StateGameTimeTrial(GameState):
     def draw_interface(self, **interface):
         super().draw_interface(**interface)
         self.screen.blit(self.font.render("Score: " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
-        self.screen.blit(self.font.render("Left: " + str(60 - self.seconds_passed) + "s", (255, 255, 255))[0], (130, 120))
+        self.screen.blit(self.font.render("Left: " + str(60 - self.seconds_passed) + " s", (255, 255, 255))[0], (130, 120))
 
     def __dict__(self) -> dict:
         return {
