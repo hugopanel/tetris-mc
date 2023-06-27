@@ -9,6 +9,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# fichier de sauvagarde des parties
+save.json
+scores.json
+
 # C extensions
 *.so
 
