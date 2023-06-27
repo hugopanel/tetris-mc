@@ -133,12 +133,15 @@ class StateGameMain(GameState):
                             self.grid[self.current_tetromino.x + x][
                                 self.current_tetromino.y + y
                             ] = self.current_tetromino.color
-                self.grid, n_lines_removed = self.delete_line_lower_bloc(self.grid)
+                self.grid, lines_removed = self.delete_line_lower_bloc(self.grid)
+                n_lines_removed = len(lines_removed)
+
+                print("Lines removed", lines_removed)
 
                 # on ajoute des particules sur chaque ligne supprimée
-                for i in range(n_lines_removed):
+                for i in lines_removed:
                     for x in range(10):
-                        self.particules.add((x + 4) * 8, (20 + 7 - i) * 8)
+                        self.particules.add((x + 4) * 8, (i + 7) * 8)
 
                 self.score += (
                     self.score_for_line_removed
@@ -177,7 +180,10 @@ class StateGameMain(GameState):
 
     def draw_interface(self, **interface):
         super().draw_interface(**interface)
-        self.screen.blit(self.font.render("Score: " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
+        self.screen.blit(
+            self.font.render("Score: " + str(round(self.score)), (255, 255, 255))[0],
+            (130, 100),
+        )
 
     def __dict__(self) -> dict:
         return {

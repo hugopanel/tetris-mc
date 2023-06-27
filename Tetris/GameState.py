@@ -147,4 +147,4 @@ class GameState(State):
         grid = np.delete(grid, lines_to_delete, axis=1)
         for _ in lines_to_delete:
             grid = np.hstack((np.array([12 for _ in range(10)])[:, np.newaxis], grid))
-        return grid, len(lines_to_delete)
+        return grid, lines_to_delete
