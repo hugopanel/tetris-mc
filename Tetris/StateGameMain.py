@@ -117,7 +117,7 @@ class StateGameMain(GameState):
 
     def draw_interface(self, **interface):
         super().draw_interface(**interface)
-        self.screen.blit(self.font.render("Score : " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
+        self.screen.blit(self.font.render("Score: " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
 
     def __dict__(self) -> dict:
         return {

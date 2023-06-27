@@ -42,8 +42,8 @@ class StateGameChallenges(GameState):
 
         self.lock_movements = False
 
-        self.challenges = ['300 d\'un coup', '4 lignes d\'un coup',
-                           '3 lignes à la suite']
+        self.challenges = ['score 300 one-shot', '4 lines one-shot',
+                           '3 lines in a row']
         self.current_challenge = 0
         self.lines_removed_streak = 0  # Nombre de lignes supprimées d'affilée
 
@@ -147,11 +147,11 @@ class StateGameChallenges(GameState):
                         7)  # Affichage de la prochaine forme
 
         # Affichage du défi actuel
-        self.screen.blit(self.font.render("Défi : " + self.challenges[self.current_challenge], (255, 255, 255))[0], (10, 10))
+        self.screen.blit(self.font.render("Challenge: " + self.challenges[self.current_challenge], (255, 255, 255))[0], (10, 10))
 
     def draw_interface(self, **interface):
         super().draw_interface(**interface)
-        self.screen.blit(self.font.render("Score : " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
+        self.screen.blit(self.font.render("Score: " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
 
     def __dict__(self) -> dict:
         return {
