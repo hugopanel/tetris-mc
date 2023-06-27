@@ -13,6 +13,8 @@ class StateMenuMain(State):
         self.selection = 0
         self.items = ["Classic mode", "Time trials", "Challenges", "Load game"]
 
+        self.background = pygame.image.load("background_main_menu.png")
+
     def update(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -53,5 +55,5 @@ class StateMenuMain(State):
         self.selection %= len(self.items)
 
     def render(self):
-        self.draw_interface(interface=np.full((32, 30), 12, dtype=int))
-        self.screen.blit(self.font.render(self.items[self.selection], (255, 255, 255))[0], (10, 10))
+        self.screen.blit(self.background, (0, 0))
+        self.screen.blit(self.font.render(self.items[self.selection], (255, 255, 255))[0], (80, 130))
