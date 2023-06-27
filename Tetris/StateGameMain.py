@@ -3,7 +3,7 @@ from Tetris.GameState import GameState
 from Tetris.StateMenuPause import StateMenuPause
 from Tetris.StateGamePost import StateGamePost
 
-from particule import Particule
+from particule import Particules
 
 import random
 import pygame
@@ -71,7 +71,7 @@ class StateGameMain(GameState):
 
         self.grid = grid if grid else np.full((10, 20), 12, dtype=int)
 
-        self.particules = []
+        self.particules = Particules()
 
         self.lock_movements = False
 
@@ -99,13 +99,6 @@ class StateGameMain(GameState):
                         distance += 1
                         pass
 
-                    for nb_particule in range(distance):
-                        self.particules.append(
-                            Particule(
-                                (self.current_tetromino.x + 4) * 8,
-                                (self.current_tetromino.y + 4) * 8,
-                            )
-                        )
                     self.lock_movements = True  # On bloque les mouvements latéraux.
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     self.states_stack.append(StateMenuPause(self.game))
@@ -142,6 +135,13 @@ class StateGameMain(GameState):
                             ] = self.current_tetromino.color
                 self.grid, n_lines_removed = self.delete_line_lower_bloc(self.grid)
 
+                # on ajoute des particules sur chaque ligne supprimée
+                for i in range(n_lines_removed):
+                    for x in range(10):
+                        self.particules.add((x + 4) * 8, (20 + 7 - i) * 8)
+
+                self.particules.update()
+
                 self.score += (
                     self.score_for_line_removed
                     * self.multiplier
@@ -174,8 +174,7 @@ class StateGameMain(GameState):
         self.draw_shape(
             self.next_tetromino.shape_grid, self.next_tetromino.color, 19, 7
         )  # Affichage de la prochaine forme
-        for particule in self.particules:
-            particule.draw(self.game["screen"])
+        self.particules.draw(self.screen)
 
     def __dict__(self) -> dict:
         return {

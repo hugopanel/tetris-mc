@@ -27,6 +27,24 @@ class Particule:
             screen, self.color, (int(self.x), int(self.y)), int(self.size)
         )
 
+class Particules:
+    def __init__(self):
+        self.particles = []
+
+    def update(self):
+        for particle in self.particles:
+            particle.update()
+
+            if particle.size <= 0:
+                self.particles.remove(particle)
+
+    def draw(self, screen):
+        for particle in self.particles:
+            particle.draw(screen)
+
+    def add(self, x, y):
+        self.particles.append(Particule(x, y))
+
 
 if __name__ == "__main__":
     pygame.init()
@@ -34,7 +52,7 @@ if __name__ == "__main__":
     pygame.display.set_caption("Effet de particules")
     clock = pygame.time.Clock()
 
-    particles = []
+    particles = Particules()
 
     running = True
     while running:
@@ -43,19 +61,13 @@ if __name__ == "__main__":
                 running = False
 
         x, y = pygame.mouse.get_pos()
-        particles.append(
-            Particle(x, y)
-        )  # Ajouter une nouvelle particule a la posiion de la souris
+        particles.add(x,y)
 
         screen.fill((0, 0, 0))  # Effacer l'écran
 
-        for particle in particles:
-            particle.update()
-            particle.draw()
-
-            if particle.size <= 0:
-                particles.remove(particle)
-
+        particles.update()
+        particles.draw(screen)
+        
         pygame.display.flip()
         clock.tick(120)
 
