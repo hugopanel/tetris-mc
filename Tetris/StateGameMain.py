@@ -115,6 +115,10 @@ class StateGameMain(GameState):
         self.draw_shape(self.next_tetromino.shape_grid, self.next_tetromino.color, 19,
                         7)  # Affichage de la prochaine forme
 
+    def draw_interface(self, **interface):
+        super().draw_interface(**interface)
+        self.screen.blit(self.font.render("Score: " + str(round(self.score)), (255, 255, 255))[0], (130, 100))
+
     def __dict__(self) -> dict:
         return {
             'gamemode': 'classic',
