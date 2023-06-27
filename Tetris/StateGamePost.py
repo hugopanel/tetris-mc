@@ -16,6 +16,9 @@ class StateGamePost(State):
 
     def update(self):
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
             if event.type == pygame.KEYDOWN:
                 if event.dict['unicode'] == '\x08':  # Touche retour (effacer)
                     self.text_input = self.text_input[:-1]

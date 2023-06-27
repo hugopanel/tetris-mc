@@ -1,6 +1,7 @@
 from Tetris.State import *
 from Tetris.StateGameMain import StateGameMain
 from Tetris.StateGameTimeTrial import StateGameTimeTrial
+from Tetris.StateGameChallenges import StateGameChallenges
 
 import os
 import json
@@ -10,7 +11,7 @@ class StateMenuMain(State):
     def __init__(self, game):
         super().__init__(game)
         self.selection = 0
-        self.items = ["Mode classique", "Temps contre la montre", "Charger partie"]
+        self.items = ["Mode classique", "Temps contre la montre", "Défis", "Charger partie"]
 
     def update(self):
         for event in pygame.event.get():
@@ -24,9 +25,11 @@ class StateMenuMain(State):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 if self.selection == 0:
                     self.states_stack.append(StateGameMain(self.game))
-                if self.selection == 1:
+                elif self.selection == 1:
                     self.states_stack.append(StateGameTimeTrial(self.game))
                 elif self.selection == 2:
+                    self.states_stack.append(StateGameChallenges(self.game))
+                else:
                     # Chargement de la dernière partie
                     if os.path.isfile("save.json"):
                         if os.stat("save.json").st_size != 0:
@@ -37,6 +40,8 @@ class StateMenuMain(State):
                                 class_to_load = StateGameMain
                             elif data_json['gamemode'] == 'timetrials':
                                 class_to_load = StateGameTimeTrial
+                            elif data_json['gamemode'] == 'challenges':
+                                class_to_load = StateGameChallenges
                             else:
                                 class_to_load = StateGameMain
                             self.states_stack.append(class_to_load(self.game, data_json['score'],
