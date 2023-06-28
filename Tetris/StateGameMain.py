@@ -141,7 +141,8 @@ class StateGameMain(GameState):
                 # on ajoute des particules sur chaque ligne supprimée
                 for i in lines_removed:
                     for x in range(10):
-                        self.particules.add((x + 4) * 8, (i + 7) * 8)
+                        for _ in range(2):
+                            self.particules.add((x + 4) * 8, (i + 7) * 8)
 
                 self.score += (
                     self.score_for_line_removed
