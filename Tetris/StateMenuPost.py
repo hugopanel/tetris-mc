@@ -48,5 +48,5 @@ class StateMenuPost(State):
 
     def render(self):
         self.draw_interface(np.full((32, 30), 12, dtype=int))
-        self.screen.blit(self.font.render("Saisissez votre nom", (255, 255, 255))[0], (10, 10))
+        self.screen.blit(self.font.render("Type your name", (255, 255, 255))[0], (10, 10))
         self.screen.blit(self.font.render(self.text_input, (255, 255, 255))[0], (10, 30))
