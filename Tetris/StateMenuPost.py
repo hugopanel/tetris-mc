@@ -6,7 +6,7 @@ import pygame
 import numpy as np
 
 
-class StateGamePost(State):
+class StateMenuPost(State):
     def __init__(self, game, score, gamemode='classic'):
         super().__init__(game)
         self.score = score

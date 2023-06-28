@@ -3,7 +3,7 @@ import pygame.event
 from Tetris.Tetromino import *
 from Tetris.GameState import GameState
 from Tetris.StateMenuPause import StateMenuPause
-from Tetris.StateGamePost import StateGamePost
+from Tetris.StateMenuPost import StateMenuPost
 
 import random
 
@@ -77,11 +77,11 @@ class StateGameTimeTrial(GameState):
                 print(60 - self.seconds_passed)
             if event.type == self.event_end_time_trial:
                 # Fin du compteur, on termine le jeu
-                self.states_stack.append(StateGamePost(self.game, self.score, 'time_trial'))
+                self.states_stack.append(StateMenuPost(self.game, self.score, 'time_trial'))
                 return
 
             if (60-self.seconds_passed)<=0:
-                self.states_stack.append(StateGamePost(self.game, self.score, 'time_trial'))
+                self.states_stack.append(StateMenuPost(self.game, self.score, 'time_trial'))
                 return
 
         self.frame_counter += 1
@@ -94,7 +94,7 @@ class StateGameTimeTrial(GameState):
                 if not self.current_tetromino.try_move(0, 0, self.grid) and self.current_tetromino.y == 0:
                     # Game over
                     print("Game Over!")
-                    self.states_stack.append(StateGamePost(self.game, self.score))
+                    self.states_stack.append(StateMenuPost(self.game, self.score))
                     return
                 
 

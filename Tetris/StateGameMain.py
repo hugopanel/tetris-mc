@@ -1,7 +1,7 @@
 from Tetris.Tetromino import *
 from Tetris.GameState import GameState
 from Tetris.StateMenuPause import StateMenuPause
-from Tetris.StateGamePost import StateGamePost
+from Tetris.StateMenuPost import StateMenuPost
 
 from particule import Particules
 
@@ -116,7 +116,7 @@ class StateGameMain(GameState):
                 ):
                     # Game over
                     print("Game Over!")
-                    self.states_stack.append(StateGamePost(self.game, self.score))
+                    self.states_stack.append(StateMenuPost(self.game, self.score))
                     return
 
                 self.score += self.score_for_new_shape_placed * self.multiplier

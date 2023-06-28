@@ -1,7 +1,7 @@
 from Tetris.Tetromino import *
 from Tetris.GameState import GameState
 from Tetris.StateMenuPause import StateMenuPause
-from Tetris.StateGamePost import StateGamePost
+from Tetris.StateMenuPost import StateMenuPost
 
 import random
 import pygame
@@ -82,7 +82,7 @@ class StateGameChallenges(GameState):
                 if not self.current_tetromino.try_move(0, 0, self.grid) and self.current_tetromino.y == 0:
                     # Game over
                     print("Game Over!")
-                    self.states_stack.append(StateGamePost(self.game, self.score, 'challenges'))
+                    self.states_stack.append(StateMenuPost(self.game, self.score, 'challenges'))
                     return
 
                 score_to_add = self.score_for_new_shape_placed * self.multiplier
