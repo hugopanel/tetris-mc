@@ -96,8 +96,8 @@ class StateGameChallenges(GameState):
                             # Il y a un bloc, on l'ajoute
                             self.grid[self.current_tetromino.x + x][
                                 self.current_tetromino.y + y] = self.current_tetromino.color
-                self.grid, n_lines_removed = self.delete_line_lower_bloc(self.grid)
-
+                self.grid, lines_removed = self.delete_line_lower_bloc(self.grid)
+                n_lines_removed = len(lines_removed)
                 if self.current_challenge == 2:
                     if n_lines_removed == 0:
                         self.lines_removed_streak = 0

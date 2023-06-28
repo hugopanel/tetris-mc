@@ -109,7 +109,8 @@ class StateGameTimeTrial(GameState):
                             # Il y a un bloc, on l'ajoute
                             self.grid[self.current_tetromino.x + x][
                                 self.current_tetromino.y + y] = self.current_tetromino.color
-                self.grid, n_lines_removed = self.delete_line_lower_bloc(self.grid)
+                self.grid, lines_removed = self.delete_line_lower_bloc(self.grid)
+                n_lines_removed = len(lines_removed)
 
                 self.score += self.score_for_line_removed * self.multiplier * n_lines_removed * 1.5
                 self.multiplier += self.multiplier * self.multiplier_for_line_removed * n_lines_removed
